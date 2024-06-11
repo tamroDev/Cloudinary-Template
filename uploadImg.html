@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tải ảnh lên Cloudinary</title>
+    <script
+      src="https://widget.cloudinary.com/v2.0/global/all.js"
+      type="text/javascript"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-core/2.11.0/cloudinary-core-shrinkwrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>Tải ảnh lên Cloudinary</h1>
+    <input type="file" id="file-upload" accept="image/*" multiple />
+    <button id="upload-button">Upload</button>
+    <script>
+      const productImage = document.getElementById("file-upload");
+
+      const button = document.querySelector("#upload-button");
+      button.addEventListener("click", async () => {
+        const urls = await settingUpload(productImage.files);
+
+        console.log(urls);
+      });
+
+      const settingUpload = async (files) => {
+        if (files) {
+          const CLOUD_NAME = "darfs1ul6";
+          const PRESET_NAME = "Lacoste";
+          const FOLDER_NAME = "Lacoste";
+          const urls = [];
+          const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+          const formData = new FormData();
+
+          formData.append("upload_preset", PRESET_NAME);
+          formData.append("folder", FOLDER_NAME);
+
+          for (const file of files) {
+            formData.append("file", file);
+
+            const response = await axios.post(api, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            });
+
+            urls.push(response.data.secure_url);
+          }
+          return urls;
+        }
+      };
+    </script>
+    <script
+      src="https://widget.cloudinary.com/v2.0/global/all.js"
+      type="text/javascript"
+    ></script>
+  </body>
+</html>
